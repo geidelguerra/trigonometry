@@ -1,4 +1,6 @@
-# Trigonometry visualization in C with Raylib
+# Trigonometry visualizations in C with Raylib
+
+![image](screenshot.png)
 
 ## References
 - https://github.com/raysan5/raylib
