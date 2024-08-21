@@ -23,6 +23,8 @@ void Example2() {
     Vector2 mouse = GetMousePosition();
 
     float radius = Vector2Distance(mouse, center);
+
+    // Same as using: Vector2LineAngle(center, mouse) * -1;
     float angle = -atan2f(mouse.y - center.y, mouse.x - center.x) * -1;
     float x = center.x + cos(angle) * radius;
     float y = center.y + sin(angle) * radius;
