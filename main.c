@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -41,19 +43,83 @@ void Example2() {
     DrawText("Move the mouse", 22, GetScreenHeight() - 42, 20, GRAY);
 }
 
+void Example3() {
+    Vector2 center = { GetScreenWidth() / 2 , GetScreenHeight() / 2 };
+
+    time_t currentTime;
+    struct tm *timeinfo;
+    time(&currentTime);
+    timeinfo = localtime(&currentTime);
+
+    float faceRadius = 310;
+    float secondsRadius = 290;
+    float minutesRadius = 250;
+    float hoursRadius = 200;
+
+    DrawCircleV(center, 310, WHITE);
+
+    for (int i = 0; i < 60; i++) {
+        float angle = i / 60.0 * (PI * 2) - (PI / 2);
+        float tickLength = 20;
+        float tickThickness = 2;
+        if (i % 5 == 0 ) {
+            tickLength = 40;
+            tickThickness = 4;
+        }
+
+        Vector2 startPos = {
+            center.x + cos(angle) * (faceRadius - tickLength),
+            center.y + sin(angle) * (faceRadius - tickLength),
+        };
+        Vector2 endPos = {
+            center.x + cos(angle) * faceRadius,
+            center.y + sin(angle) * faceRadius,
+        };
+        DrawLineEx(startPos, endPos, tickThickness, BLACK);
+    }
+
+    float secondsAngle = (timeinfo->tm_sec / 60.0 * (PI * 2)) - (PI / 2);
+    Vector2 secondsPosition = {
+        center.x + cos(secondsAngle) * secondsRadius,
+        center.y + sin(secondsAngle) * secondsRadius
+    };
+    DrawLineEx(center, secondsPosition, 2, BLACK);
+
+    float minutesAngle = (timeinfo->tm_min / 60.0 * (PI * 2)) - (PI / 2);
+    Vector2 minutesPosition = {
+        center.x + cos(minutesAngle) * minutesRadius,
+        center.y + sin(minutesAngle) * minutesRadius
+    };
+    DrawLineEx(center, minutesPosition, 4, BLACK);
+
+    float hoursAngle = ((timeinfo->tm_hour % 12) / 12.0) * (PI * 2) - (PI / 2);
+    Vector2 hoursPosition = {
+        center.x + cos(hoursAngle) * hoursRadius,
+        center.y + sin(hoursAngle) * hoursRadius
+    };
+    DrawLineEx(center, hoursPosition, 5, BLACK);
+
+    DrawText(
+        TextFormat("Time: %s", asctime(timeinfo)),
+        22,
+        GetScreenHeight() - 42,
+        20,
+        GRAY
+    );
+}
+
 int main() {
     InitWindow(800, 800, "Trigonometry");
     SetTargetFPS(144);
     int activeExample = 1;
-    int examplesCount = 2;
+    int examplesCount = 3;
 
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_ONE)) {
-            activeExample = 1;
-        }
-
-        if (IsKeyPressed(KEY_TWO)) {
-            activeExample = 2;
+        for (int i = 1; i <= examplesCount; i++) {
+            if (IsKeyPressed(KEY_ZERO + i)) {
+                activeExample = i;
+                break;
+            }
         }
 
         BeginDrawing();
@@ -63,6 +129,8 @@ int main() {
             case 1: Example1();
             break;
             case 2: Example2();
+            break;
+            case 3: Example3();
             break;
         }
 
